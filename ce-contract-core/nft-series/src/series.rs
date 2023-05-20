@@ -93,9 +93,6 @@ impl Contract {
             );
         }
 
-        // The token ID is stored internally as `${series_id}:${edition}`
-        // let token_id = format!("{}", id.0);
-
         if series.tokens.contains(&token_id) {
             panic!("Already Exists, token_id: {}", token_id)
         };

@@ -60,7 +60,12 @@ impl Contract {
 
     //place an offer on a specific sale. The sale will go through as long as your deposit is greater than or equal to the list price
     #[payable]
-    pub fn offer(&mut self, nft_contract_id: AccountId, token_id: String) {
+    pub fn offer(
+        //
+        &mut self,
+        nft_contract_id: AccountId,
+        token_id: String,
+    ) {
         //get the attached deposit and make sure it's greater than 0
         let deposit = env::attached_deposit();
         assert!(deposit > 0, "Attached deposit must be greater than 0");
