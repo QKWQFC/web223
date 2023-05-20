@@ -133,14 +133,16 @@ async function mintNFT(receiverId: string, contractId: string, mintBody: MintBod
 
     mintBody.receiverId = receiverId
     mintBody.approved = false
+    const sequenceDoc = await getSequenceNumberOfNFT(contractId)
     const inserted: ObjectId | null = await insertNftDocument({
         contractId: contractId,
-        mintBody: mintBody
+        mintBody: mintBody,
+        price: `${sequenceDoc?.sequence_value || 1}`
     })
     if(!inserted){
         return false
     }
-    const seqNo = await getSequenceNumberOfNFT(contractId)
+    
     
     // Mints a new token and returns it
     await contract.nft_mint(
@@ -148,7 +150,7 @@ async function mintNFT(receiverId: string, contractId: string, mintBody: MintBod
             callbackUrl:`http://localhost:3003/web3/nft/contracts/${contractId}/mint/callback`,
             meta: inserted.toHexString(),
             args: {
-                id : `${seqNo}`,
+                id : `${sequenceDoc?.sequence_value}`,
                 token_id: mintBody.tokenId,
                 receiver_id: receiverId,
             },
@@ -287,10 +289,9 @@ router.get('/contracts/:id/tokens', async (req: Request, res: Response)=>{
         viewMethods: ['nft_tokens_for_owner'],
         changeMethods: [],
     }) as any;
-    console.log(walletAddress)
     const nftTokens = await contract.nft_tokens_for_owner({
+        account_id: walletAddress,
         args: {
-            account_id: walletAddress,
             from_index: '0',
             limit: 10,
         },
@@ -299,5 +300,27 @@ router.get('/contracts/:id/tokens', async (req: Request, res: Response)=>{
     
     res.json(nftTokens)
 })
+
+
+router.get('/contracts/:id/tokens/all', async (req: Request, res: Response)=>{
+    const contractId = req.params.id
+ 
+    const masterAccount = await getMasterAccount()
+
+    const contract = new Contract(masterAccount, contractId, {
+        viewMethods: ['nft_tokens'],
+        changeMethods: [],
+    }) as any;
+    const nftTokens = await contract.nft_tokens({
+        args: {},
+        gas:'300000000000000',
+        amount: oneYoctoNEARInString
+    });
+    
+    res.json(nftTokens)
+})
+
+
+
 
 module.exports = router

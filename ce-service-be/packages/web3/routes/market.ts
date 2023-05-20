@@ -17,6 +17,10 @@ const {
     KeyPairEd25519,
 } = require('@near-js/crypto');
 
+import {
+    onSaleNFTDocument
+} from 'common/dao/nft'
+
 const oneYoctoNEARInString = utils.format.parseNearAmount('0.000000000000000000000001');
 
 const router = express.Router()
@@ -26,6 +30,7 @@ const NETWORK_ID = process.env.NETWORK_ID || 'testnet'
 const MASTER_ACCOUNT_ID = process.env.MASTER_ACCOUNT_ID || ''
 const MASTER_ACCOUNT_PRIVATE = process.env.MASTER_ACCOUNT_PRIVATE!!
 const masterKeyPair = new KeyPairEd25519(MASTER_ACCOUNT_PRIVATE)
+
 const keyStore = new keyStores.InMemoryKeyStore()
 keyStore.setKey(NETWORK_ID, MASTER_ACCOUNT_ID, masterKeyPair)
 // Set up some config variables
@@ -56,28 +61,106 @@ async function getMasterAccount(): Promise < Account > {
     return getContractAccount(MASTER_ACCOUNT_ID)
 }
 
-
-router.put('/contracts/:id/deposit', async (req: Request, res: Response)=>{
+interface DepositBody {
+    accountId : string;
+    amount : string;
+}
+router.post('/contracts/:id/deposit', async (req: Request, res: Response)=>{
     const contractId = req.params.id
-    const depositBody = req.body
-    
+    const depositBody : DepositBody = req.body
+    const accountId = depositBody.accountId
+    if(!accountId){
+        res.status(400).send('Bad Request: `account_id` Missing or invalid in body ');
+        return
+    }
     const masterAccount = await getMasterAccount()
 
     const contract = new Contract(masterAccount, contractId, {
         viewMethods: [],
         changeMethods: ['storage_deposit'],
     }) as any;
-
-    await contract.nft_tokens_for_owner({
+    
+    await contract.storage_deposit({
         args: {
-            account_id: depositBody['account_id'],
+            account_id: accountId,
         },
         gas:'300000000000000',
-        amount: oneYoctoNEARInString
+        amount: utils.format.parseNearAmount(depositBody.amount)
     });
     
     res.json({})
 })
 
+interface ApproveBody {
+    tokenId: string;
+    accountId: string;
+    salePrice : string;
+}
+
+router.post('/contracts/:id/approve', async (req: Request, res: Response)=>{
+    const contractId = req.params.id
+    const approveBody : ApproveBody = req.body
+    const accountId = approveBody.accountId
+    if(!accountId){
+        res.status(400).send('Bad Request: `account_id` Missing or invalid in body ');
+        return
+    }
+    const masterAccount = await getMasterAccount()
+    
+    const contract = new Contract(masterAccount, accountId, {
+        viewMethods: [],
+        changeMethods: ['nft_approve'],
+    }) as any;
+
+    await contract.nft_approve({
+        args: {
+            account_id: accountId,
+            token_id: approveBody.tokenId,
+            msg: JSON.stringify({sale_conditions: utils.format.parseNearAmount(approveBody.salePrice)})
+        },
+        gas:'300000000000000',
+        amount: utils.format.parseNearAmount("0.0003") // 최소 amount 
+    });
+    console.log('done?')
+    const contractAccount = await getContractAccount(contractId)
+    const status = await contractAccount.connection.provider.status()
+    
+    await onSaleNFTDocument(contractId, approveBody.tokenId, approveBody.salePrice, status.sync_info.latest_block_height)
+    
+    res.json({})
+})
+
+interface OfferBody {
+    accountId: string;
+    tokenId: string;
+    purchasePrice: string;
+}
+
+router.post('/contracts/:id/offer', async (req: Request, res: Response)=>{
+    const contractId = req.params.id
+    const offerBody : OfferBody = req.body
+    const accountId = offerBody.accountId
+    if(!accountId){
+        res.status(400).send('Bad Request: `account_id` Missing or invalid in body ');
+        return
+    }
+    const masterAccount = await getMasterAccount()
+
+    const contract = new Contract(masterAccount, contractId, {
+        viewMethods: [],
+        changeMethods: ['offer'],
+    }) as any;
+
+    await contract.offer({
+        args: {
+            account_id: accountId,
+            token_id: offerBody.tokenId,
+        },
+        gas:'300000000000000',
+        amount: utils.format.parseNearAmount(offerBody.purchasePrice)
+    });
+    
+    res.json({})
+})
 
 module.exports = router

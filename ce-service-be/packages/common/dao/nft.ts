@@ -5,7 +5,8 @@ import {
 } from 'mongodb';
 
 import Nft, {
-    INFTMint
+    INFTMint,
+    NFT_STATUS
 } from '../models/NftMint';
 
 async function insertNftDocument(nftInfo: INFTMint): Promise < ObjectId | null > {
@@ -34,7 +35,8 @@ async function approveMintDocument(contractId: string, nftId: string, blockHeigh
     }, {
         $set: {
             blockHeight : blockHeight,
-            "mintBody.approved": true
+            "mintBody.approved": true,
+            status: NFT_STATUS.OWN
         }
     }, {
         upsert: true
@@ -64,8 +66,33 @@ async function updateNftDocument(contractId: string, tokenId: string, receiverId
     await client.close();
 }
 
+async function onSaleNFTDocument(contractId: string, tokenId: string, price: string, blockHeight: number): Promise < void > {
+    const client = new MongoClient('mongodb://localhost:27017');
+    await client.connect();
+
+    const db: Db = client.db('2to3');
+
+    await db.collection(contractId).findOneAndUpdate({
+        contractId: contractId,
+        "mintBody.tokenId": tokenId
+    }, {
+        $set: {
+            blockHeight : blockHeight,
+            "mintBody.approved": true,
+            status : NFT_STATUS.ON_SALE,
+            price : price
+        }
+    }, {
+        upsert: true
+    });
+    await client.close();
+}
+
+
+
 export {
     insertNftDocument,
     approveMintDocument,
-    updateNftDocument
+    updateNftDocument,
+    onSaleNFTDocument
 }

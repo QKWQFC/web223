@@ -35,7 +35,7 @@ async function getSerialNumberOfNFT(contractId: string, serialBody: SerialBody):
     return serialNumber
 }
 
-async function getSequenceNumberOfNFT(contractId: string): Promise < number > {
+async function getSequenceNumberOfNFT(contractId: string): Promise < ISequence | null > {
     const sequenceName = 'seqInc'
     const client = new MongoClient('mongodb://localhost:27017');
     await client.connect();
@@ -53,12 +53,9 @@ async function getSequenceNumberOfNFT(contractId: string): Promise < number > {
             contractId: contractId,
         })
         serialNumber = latestSerial
-    } else {
-        console.log( sequenceDocument)
-        serialNumber = sequenceDocument.sequence_value
     }
     await client.close()
-    return serialNumber
+    return sequenceDocument
 }
 
 async function getSequenceValue(sequenceName: string = 'productid', contractId: string): Promise < number > {
