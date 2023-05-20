@@ -28,9 +28,8 @@ class _MyTicketPageState extends State<MyTicketPage> {
             ElevatedButton(
               onPressed: () async {
                 await getMyTicketList();
-                setState(() {
-                  ticketString = listUpTickets();
-                });
+                ticketString = listUpTickets();
+                setState(() {});
               },
               child: const Text('show my ticket'),
             ),

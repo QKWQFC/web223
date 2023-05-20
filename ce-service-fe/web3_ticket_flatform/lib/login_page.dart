@@ -8,6 +8,7 @@ import 'package:web3_ticket_flatform/data/datas.dart';
 import 'package:near_api_flutter/near_api_flutter.dart' as napi;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:bs58/bs58.dart';
+import 'package:web3_ticket_flatform/mypage_view.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -26,38 +27,61 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                await kakaoLogin(context);
-                napi.PrivateKey userPrivateKey =
-                    napi.PrivateKey(base58.decode(userPrivateKeyString));
-                napi.PublicKey userPublicKey =
-                    napi.PublicKey(userPrivateKey.bytes.sublist(32, 64));
+    if (!isAccountLogined) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Ticket",
+                      style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.w800,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.cyan)),
+                  Text("Exchagers",
+                      style: TextStyle(
+                          fontSize: 60,
+                          fontWeight: FontWeight.w800,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.black)),
+                ],
+              ),
+              const SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () async {
+                  await kakaoLogin(context);
+                  napi.PrivateKey userPrivateKey =
+                      napi.PrivateKey(base58.decode(userPrivateKeyString));
+                  napi.PublicKey userPublicKey =
+                      napi.PublicKey(userPrivateKey.bytes.sublist(32, 64));
 
-                connectedAccount = napi.Account(
-                    accountId: userAccount,
-                    keyPair: napi.KeyPair(userPrivateKey, userPublicKey),
-                    provider: napi.NEARTestNetRPCProvider());
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
-                  fixedSize: const Size(210, 50)),
-              child: const Text('Login with Kakao'),
-            ),
-            Text("Your Access Token:$userToken"),
-            const SizedBox(
-              height: 10,
-            ),
-            Text("Your User Info:$userInfo"),
-          ],
+                  connectedAccount = napi.Account(
+                      accountId: userAccount,
+                      keyPair: napi.KeyPair(userPrivateKey, userPublicKey),
+                      provider: napi.NEARTestNetRPCProvider());
+                },
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                    backgroundColor: Colors.cyan,
+                    fixedSize: const Size(210, 50)),
+                child: const Text('Login with Kakao',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontStyle: FontStyle.italic,
+                    )),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return const MyPageView();
+    }
   }
 
   Future<void> kakaoLogin(BuildContext context) async {

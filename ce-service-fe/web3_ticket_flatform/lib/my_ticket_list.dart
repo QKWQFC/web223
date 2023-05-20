@@ -19,14 +19,14 @@ class _MyTicketListState extends State<MyTicketList> {
     if (ticketString != "") {
       ticketList = json.decode(ticketString);
       return SizedBox(
-        height: 500,
+        height: 600,
         child: ListView.builder(
           itemCount: ticketList.length,
           itemBuilder: (BuildContext context, int index) {
             return MyTicket(
               owner: ticketList[index]['owner_id'],
               tokenId: ticketList[index]['token_id'],
-              icon: Icons.currency_bitcoin,
+              icon: Icons.airplanemode_active,
               nearAmount: 123,
             );
           },

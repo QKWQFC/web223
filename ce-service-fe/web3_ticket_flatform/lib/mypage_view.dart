@@ -63,7 +63,7 @@ class _MyPageViewState extends State<MyPageView> {
   EdgeInsets padding = const EdgeInsets.all(12);
 
   int _selectedItemPosition = 1;
-  SnakeShape snakeShape = SnakeShape.circle;
+  SnakeShape snakeShape = SnakeShape.indicator;
 
   bool showSelectedLabels = false;
   bool showUnselectedLabels = false;
@@ -86,6 +86,7 @@ class _MyPageViewState extends State<MyPageView> {
         ),
       ),
       bottomNavigationBar: SnakeNavigationBar.color(
+        elevation: 20.0,
         behaviour: snakeBarStyle,
         snakeShape: snakeShape,
         shape: bottomBarShape,
