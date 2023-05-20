@@ -3,9 +3,21 @@ import mongoose, {
     Schema
 } from 'mongoose';
 
+// MUST: Refactoring 
+
 interface ISequence {
     sequenceName: string;
-    seqNo: number;
+    sequence_value: number;
+    contractId: string;
+    serialBody?: SerialBody;
+}
+
+interface SerialBody {
+    title: string;
+    description: string;
+    providerId: string;
+    media: string;
+    price: number;
 }
 
 const SequenceSchema: Schema = new Schema({
@@ -14,11 +26,21 @@ const SequenceSchema: Schema = new Schema({
         required: true,
         unique: true
     },
-    seqNo: {
+    sequence_value: {
         type: Number,
         required: true,
         default: 0
     },
+    sequenceId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    serialBody: {
+        type: Object,
+        required: false
+    }
+
 });
 
 interface ISequenceDocument extends ISequence, Document {}
@@ -28,5 +50,6 @@ const Sequence = mongoose.model < ISequenceDocument > ('Sequence', SequenceSchem
 export default Sequence;
 
 export {
-    ISequence
+    ISequence,
+    SerialBody
 }

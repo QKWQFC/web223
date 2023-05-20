@@ -21,8 +21,9 @@ const {
     keyStores,
 } = require("near-api-js");
 
-const NETWORK_ID = process.env.NETWORK_ID
+
 const NODE_URL = process.env.NEAR_NODE_URL
+const NETWORK_ID = process.env.NETWORK_ID
 const MASTER_ACCOUNT_ID = process.env.MASTER_ACCOUNT_ID
 const MASTER_ACCOUNT_PRIVATE = process.env.MASTER_ACCOUNT_PRIVATE
 const masterKeyPair = new KeyPairEd25519(MASTER_ACCOUNT_PRIVATE)
@@ -60,6 +61,7 @@ router.post('/create', async function (req: Request, res: Response, next: NextFu
         seqNo: uniqueNo,
         userId: reqUser.userId,
         email: reqUser.email,
+        accessToken: reqUser.accessToken,
         walletAddress: accoundId,
         privateKey: keyPair.secretKey,
         publicKey: keyPair.publicKey

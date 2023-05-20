@@ -26,6 +26,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
 });
 
-app.listen(3001, () => console.log('App listening on port 3000!'));
+app.listen(process.env.SERVER_PORT, () => console.log(`App listening on port ${process.env.SERVER_PORT}!`));
 
 module.exports = app;
