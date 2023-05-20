@@ -3,10 +3,18 @@ import mongoose, {
     Schema
 } from 'mongoose';
 
+enum NFT_STATUS{
+    ON_SALE = 'ON_SALE',
+    OWN = 'OWN',
+    BANNED = 'BANNED'
+}
+
 interface INFTMint {
     contractId: string;
     blockHeight?: number;
     mintBody: MintBody;
+    price?: string;
+    status?: NFT_STATUS
 }
 
 interface MintBody {
@@ -33,10 +41,15 @@ const NftSchema: Schema = new Schema({
         type: Object,
         required: true,
     },
-    approved: {
-        type: Boolean,
-        required: false,
-        default: false
+    price: {
+        type: String,
+        require: false,
+        default: '0'
+    },
+    status: {
+        type: String,
+        require: true,
+        default: 'OWN'
     }
 });
 
@@ -48,5 +61,6 @@ export default NftMint;
 
 export {
     INFTMint,
-    MintBody
+    MintBody,
+    NFT_STATUS
 }
