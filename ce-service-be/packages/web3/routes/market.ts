@@ -20,6 +20,7 @@ const {
 import {
     onSaleNFTDocument
 } from 'common/dao/nft'
+import { getUserDocumentByNearAccount } from 'common/dao/user';
 
 const oneYoctoNEARInString = utils.format.parseNearAmount('0.000000000000000000000001');
 
@@ -75,14 +76,14 @@ router.post('/contracts/:id/deposit', async (req: Request, res: Response)=>{
     }
     const masterAccount = await getMasterAccount()
 
-    const contract = new Contract(masterAccount, contractId, {
+    const contract = new Contract(masterAccount, accountId, {
         viewMethods: [],
         changeMethods: ['storage_deposit'],
     }) as any;
     
     await contract.storage_deposit({
         args: {
-            account_id: accountId,
+            account_id: MASTER_ACCOUNT_ID,
         },
         gas:'300000000000000',
         amount: utils.format.parseNearAmount(depositBody.amount)
@@ -107,7 +108,7 @@ router.post('/contracts/:id/approve', async (req: Request, res: Response)=>{
     }
     const masterAccount = await getMasterAccount()
     
-    const contract = new Contract(masterAccount, accountId, {
+    const contract = new Contract(masterAccount, contractId, {
         viewMethods: [],
         changeMethods: ['nft_approve'],
     }) as any;
@@ -119,9 +120,9 @@ router.post('/contracts/:id/approve', async (req: Request, res: Response)=>{
             msg: JSON.stringify({sale_conditions: utils.format.parseNearAmount(approveBody.salePrice)})
         },
         gas:'300000000000000',
-        amount: utils.format.parseNearAmount("0.0003") // 최소 amount 
+        amount: utils.format.parseNearAmount("0.0004") // 최소 amount 
     });
-    console.log('done?')
+
     const contractAccount = await getContractAccount(contractId)
     const status = await contractAccount.connection.provider.status()
     
@@ -132,6 +133,7 @@ router.post('/contracts/:id/approve', async (req: Request, res: Response)=>{
 
 interface OfferBody {
     accountId: string;
+    marketId : string;
     tokenId: string;
     purchasePrice: string;
 }
@@ -144,16 +146,23 @@ router.post('/contracts/:id/offer', async (req: Request, res: Response)=>{
         res.status(400).send('Bad Request: `account_id` Missing or invalid in body ');
         return
     }
-    const masterAccount = await getMasterAccount()
+    //
+    const userInfo = await getUserDocumentByNearAccount(accountId)
+    if(userInfo){
+        const keyPair = new KeyPairEd25519(userInfo?.privateKey!!)
+        keyStore.setKey(NETWORK_ID,accountId, keyPair)
+    }
+    //
+    const account = await getContractAccount(accountId)
 
-    const contract = new Contract(masterAccount, contractId, {
+    const contract = new Contract(account, offerBody.marketId, {
         viewMethods: [],
         changeMethods: ['offer'],
     }) as any;
 
     await contract.offer({
         args: {
-            account_id: accountId,
+            nft_contract_id: contractId,
             token_id: offerBody.tokenId,
         },
         gas:'300000000000000',
