@@ -48,7 +48,7 @@ class MyTicket extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          nearAmount.toString(),
+                          '$nearAmount Near',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,

@@ -7,4 +7,4 @@ Account connectedAccount = Account(
     provider: NEARTestNetRPCProvider()); // testing
 bool isAccountLogined = false; // testing
 
-String ticketString = '';
+String ticketString = "";

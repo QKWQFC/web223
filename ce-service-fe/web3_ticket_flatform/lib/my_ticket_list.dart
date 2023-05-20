@@ -16,8 +16,8 @@ class _MyTicketListState extends State<MyTicketList> {
 
   @override
   Widget build(BuildContext context) {
-    if (ticketString != '') {
-      ticketList = jsonDecode(ticketString);
+    if (ticketString != "") {
+      ticketList = json.decode(ticketString);
       return SizedBox(
         height: 500,
         child: ListView.builder(
@@ -33,9 +33,9 @@ class _MyTicketListState extends State<MyTicketList> {
         ),
       );
     } else {
-      return const SizedBox(
+      return SizedBox(
         height: 500,
-        child: Text('nothing ticket'),
+        child: Text('nothing!$ticketString'),
       );
     }
   }

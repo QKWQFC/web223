@@ -44,7 +44,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     keyPair: napi.KeyPair(userPrivateKey, userPublicKey),
                     provider: napi.NEARTestNetRPCProvider());
               },
-              style: ElevatedButton.styleFrom(fixedSize: const Size(210, 50)),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  fixedSize: const Size(210, 50)),
               child: const Text('Login with Kakao'),
             ),
             Text("Your Access Token:$userToken"),
@@ -98,7 +100,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
     if (response.statusCode == 200) {
       user = jsonDecode(response.body);
-      userAccount = user['walletAddress'];
+      //userAccount = user['walletAddress'];
       userPrivateKeyString = user['privateKey'];
       userPublicKeyString = user['publicKey']['data'];
 
@@ -107,14 +109,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
       napi.PublicKey userPublicKey =
           napi.PublicKey(userPrivateKey.bytes.sublist(32, 64));
 
-      connectedAccount = napi.Account(
-          accountId: userAccount,
-          keyPair: napi.KeyPair(userPrivateKey, userPublicKey),
-          provider: napi.NEARTestNetRPCProvider());
+      // connectedAccount = napi.Account(
+      //     accountId: userAccount,
+      //     keyPair: napi.KeyPair(userPrivateKey, userPublicKey),
+      //     provider: napi.NEARTestNetRPCProvider());
 
       setState(() {
         isAccountLogined = true;
-        userInfo = userAccount;
       });
       if (context.mounted) {
         Navigator.pushNamed(context, '/mypageview');

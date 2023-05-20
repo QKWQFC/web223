@@ -39,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             fontSize: 30,
                             fontWeight: FontWeight.w800,
                           )),
+                      const SizedBox(height: 50),
                       ElevatedButton(
                         //call with deposit
                         onPressed: () async {
@@ -74,9 +75,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "Contract: $contractId",
-                ),
+                child: Text("Connected Contract: $contractId",
+                    style: TextStyle(fontSize: 20)),
               ),
             ],
           ),
