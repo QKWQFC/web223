@@ -15,7 +15,21 @@ async function insertUserDocument(userInfo: IUser): Promise<void> {
   
     await client.close();
   }
+
+  async function getUserDocumentByNearAccount(accountId: string) : Promise<IUser | null> {
+    const client = new MongoClient('mongodb://localhost:27017');
+    await client.connect();
+    
+    const db: Db = client.db('2to3');
+  
+    const userInfo = await db.collection('user').findOne<IUser>({'walletAddress':accountId});
+  
+    await client.close();
+
+    return userInfo 
+  }
   
   export {
-    insertUserDocument
+    insertUserDocument,
+    getUserDocumentByNearAccount,
   }
