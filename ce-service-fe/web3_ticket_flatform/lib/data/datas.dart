@@ -1,4 +1,4 @@
-const String appTitle = 'Web3 Ticket Flatform';
+const String appTitle = 'TicketExchangers';
 
 const String nearSignInSuccessUrl = 'https://glitch-hack.com/';
 const String nearSignInFailUrl = 'https://www.google.co.kr/';

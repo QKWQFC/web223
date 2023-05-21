@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:web3_ticket_flatform/near_tester.dart';
-import 'package:web3_ticket_flatform/my_ticket_list.dart';
 import 'package:web3_ticket_flatform/data/datas.dart';
 
+import 'package:web3_ticket_flatform/my_ticket_list.dart';
 import 'package:web3_ticket_flatform/data/account.dart';
 import 'package:near_api_flutter/near_api_flutter.dart' as napi;
 
@@ -26,12 +26,14 @@ class _MyTicketPageState extends State<MyTicketPage> {
           children: [
             const SizedBox(height: 30),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
               onPressed: () async {
                 await getMyTicketList();
                 ticketString = listUpTickets();
                 setState(() {});
               },
-              child: const Text('show my ticket'),
+              child:
+                  const Text('Refresh', style: TextStyle(color: Colors.black)),
             ),
             const SizedBox(height: 30),
             Container(

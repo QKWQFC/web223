@@ -45,7 +45,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           fontWeight: FontWeight.w800,
                           fontStyle: FontStyle.italic,
                           color: Colors.cyan)),
-                  Text("Exchagers",
+                  Text("Exchangers",
                       style: TextStyle(
                           fontSize: 60,
                           fontWeight: FontWeight.w800,
@@ -72,11 +72,22 @@ class _MyLoginPageState extends State<MyLoginPage> {
                         borderRadius: BorderRadius.circular(40)),
                     backgroundColor: Colors.cyan,
                     fixedSize: const Size(210, 50)),
-                child: const Text('Login with Kakao',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontStyle: FontStyle.italic,
-                    )),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Login with ',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontStyle: FontStyle.italic,
+                        )),
+                    Text('Kakao',
+                        style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 20,
+                          fontStyle: FontStyle.italic,
+                        )),
+                  ],
+                ),
               ),
             ],
           ),
@@ -113,7 +124,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     }
     setState(() {
       userToken = token.accessToken;
-      store.set('userToken',userToken);
+      store.set('userToken', userToken);
     });
 
     // 서버로 access token 전송 및 유저 정보 get

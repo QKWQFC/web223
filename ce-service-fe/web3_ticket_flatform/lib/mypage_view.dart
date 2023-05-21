@@ -4,6 +4,7 @@ import 'package:near_api_flutter/near_api_flutter.dart';
 import 'package:web3_ticket_flatform/data/datas.dart';
 import 'package:web3_ticket_flatform/data/account.dart';
 
+import 'dart:convert';
 import 'package:web3_ticket_flatform/my_ticket_page.dart';
 import 'package:web3_ticket_flatform/near_tester.dart';
 import 'package:web3_ticket_flatform/market_page.dart';
@@ -37,7 +38,7 @@ class _MyPageViewState extends State<MyPageView> {
 
   PageController pageController = PageController(initialPage: 1);
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) async {
     pageController.jumpToPage(index);
   }
 
@@ -56,6 +57,14 @@ class _MyPageViewState extends State<MyPageView> {
     setState(() {});
   }
 
+  String listUpTickets() {
+    if (myTicketResponse.isNotEmpty) {
+      return utf8.decode(myTicketResponse['result']['result'].cast<int>());
+    } else {
+      return nullTicket;
+    }
+  }
+
   ShapeBorder? bottomBarShape = const RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(25)),
   );
@@ -68,7 +77,7 @@ class _MyPageViewState extends State<MyPageView> {
   bool showSelectedLabels = false;
   bool showUnselectedLabels = false;
 
-  Color selectedColor = Colors.black;
+  Color selectedColor = Colors.white;
   Color unselectedColor = Colors.blueGrey;
 
   @override
@@ -99,7 +108,9 @@ class _MyPageViewState extends State<MyPageView> {
         showUnselectedLabels: showUnselectedLabels,
         showSelectedLabels: showSelectedLabels,
         currentIndex: _selectedItemPosition,
-        onTap: (index) => _onItemTapped(index),
+        onTap: ((index) => {
+              _onItemTapped(index),
+            }),
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications), label: 'tickets'),
