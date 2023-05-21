@@ -10,6 +10,8 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:bs58/bs58.dart';
 import 'package:web3_ticket_flatform/mypage_view.dart';
 
+import 'shared/InternalDB.dart';
+
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
 
@@ -18,6 +20,7 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyLoginPageState extends State<MyLoginPage> {
+  late InternalDB store = InternalDB();
   String userAccount = 'empty';
   String userToken = 'empty';
   String userInfo = 'empty';
@@ -110,6 +113,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     }
     setState(() {
       userToken = token.accessToken;
+      store.set('userToken',userToken);
     });
 
     // 서버로 access token 전송 및 유저 정보 get
