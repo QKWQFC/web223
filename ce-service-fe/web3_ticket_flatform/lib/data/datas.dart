@@ -7,14 +7,14 @@ const String walletURL = 'https://wallet.testnet.near.org/login/?';
 const String walletApproveTransactionUrl =
     'https://wallet.testnet.near.org/sign?';
 
-const String contractId = 'qwer234.testnet';
+const String contractId = 'YOUR_ACCOUNT_ID';
 const String mintMethod = 'nft_mint';
 const String viewMethod = 'nft_tokens_for_owner';
 
-const String nativeAppKey = 'b1f5f9ad94175b36052a88c9dc3228a2';
-const String javaScriptAppKey = '68857d5dcebdf3b5d95c00f9c57ffdbe';
+const String nativeAppKey = 'KAKAO_API_KEY';
+const String javaScriptAppKey = 'KAKAO_API_KEY';
 
-const String serverUrl = 'http://172.16.40.125:3005/auth/kakao/verify';
+const String serverUrl = 'SERVER_URL/auth/kakao/verify';
 
 Map myTicketResponse = {};
 Map mintResponse = {};

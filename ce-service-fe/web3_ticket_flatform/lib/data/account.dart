@@ -1,6 +1,6 @@
 import 'package:near_api_flutter/near_api_flutter.dart';
 
-String userAccount = 'min49590.testnet'; // testing
+String userAccount = 'YOUR_ACCOUNT_ID'; // testing
 Account connectedAccount = Account(
     accountId: userAccount,
     keyPair: KeyStore.newKeyPair(),

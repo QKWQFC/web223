@@ -53,7 +53,7 @@ class _MyTicketPageState extends State<MyTicketPage> {
 
   getMyTicketList() async {
     const method = viewMethod;
-    String methodArgs = '{"account_id": "min49590.testnet", "limit": 5}';
+    String methodArgs = '{"account_id": $userAccount, "limit": 5}';
 
     napi.Contract contract = napi.Contract(contractId, connectedAccount);
     myTicketResponse =
